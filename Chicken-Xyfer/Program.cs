@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -14,8 +15,9 @@ namespace Chicken_Xyfer
     {
         public static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
 
-        private string TOKEN = "NjkyMzc2MjIyODM5MzQxMTE2.Xnt9eA.FxC85mSxjvcjzF6QyHwDn2zHA-w";
-        private string PREFIX = "cx|";
+        readonly string TOKEN = File.ReadAllText(@"D:\SuperEGG\Discord\Bots\Chicken-Xyfer\Chicken-Xyfer\Chicken-Xyfer\token.gitignore", Encoding.UTF8);
+
+        private string PREFIX = "cx |";
         public static Color EMBEDCOLOR = new Color(0xC22947);
 
         private DiscordSocketClient _client;
