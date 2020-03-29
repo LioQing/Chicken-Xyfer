@@ -17,7 +17,7 @@ namespace Chicken_Xyfer
 
         readonly string TOKEN = File.ReadAllText(@"D:\SuperEGG\Discord\Bots\Chicken-Xyfer\Chicken-Xyfer\Chicken-Xyfer\token.gitignore", Encoding.UTF8);
 
-        private string PREFIX = "cx |";
+        private string PREFIX = "cx|";
         public static Color EMBEDCOLOR = new Color(0xC22947);
 
         private DiscordSocketClient _client;
