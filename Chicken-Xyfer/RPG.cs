@@ -198,12 +198,12 @@ namespace Chicken_Xyfer.RPG
                 .AddField("User", Player.GetByUserInList(user, players).User)
                 .AddField("Info Name", "Damage\nDamage Range\nHP\nDefence\nExp\nLevel", true)
                 .AddField("Value",
+                player.GetComponent<ExpComponent>().Exp + "\\" + Player.GetByUserInList(user, players).GetComponent<ExpComponent>().GetNextLvlExp() + "\n" +
+                player.GetComponent<ExpComponent>().Lvl + "\n\n" +
                 player.GetComponent<AttackComponent>().Dmg + "\n" +
                 player.GetComponent<AttackComponent>().DmgRange + "\n" +
                 player.GetComponent<HealthComponent>().Hp + "\n" +
-                player.GetComponent<HealthComponent>().Def + "\n" +
-                player.GetComponent<ExpComponent>().Exp + "\\" + Player.GetByUserInList(user, players).GetComponent<ExpComponent>().GetNextLvlExp() + "\n" +
-                player.GetComponent<ExpComponent>().Lvl
+                player.GetComponent<HealthComponent>().Def
                 , true);
         }
 
