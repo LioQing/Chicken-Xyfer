@@ -212,6 +212,7 @@
     <Compile Include="RPG\Components\BaseComponent.cs" />
     <Compile Include="RPG\Components\ExpComponent.cs" />
     <Compile Include="RPG\Components\HealthComponent.cs" />
+    <Compile Include="RPG\Components\MExpComponent.cs" />
     <Compile Include="RPG\Entity\BaseEntity.cs" />
     <Compile Include="RPG\Entity\Character.cs" />
     <Compile Include="RPG\Entity\Monster.cs" />

@@ -13,12 +13,7 @@ namespace Chicken_Xyfer.RPG
 {
     class RPG
     {
-        EmbedBuilder output = new EmbedBuilder
-        {
-            Title = "RPG",
-            Description = "Sample",
-            Color = Program.EMBEDCOLOR,
-        };
+        EmbedBuilder output = new EmbedBuilder();
 
         IList<string> playerInfoList = new List<string>()
         {
@@ -70,9 +65,9 @@ namespace Chicken_Xyfer.RPG
                 {
                     ExpChart();
                 }
-                else if (UserHasPlayer(msg.Author))
+                else if (lowArgs[1] == "attack" || lowArgs[1] == "atk")
                 {
-                    if (lowArgs[1] == "attack" || lowArgs[1] == "atk")
+                    if (UserHasPlayer(msg.Author))
                     {
                         Attack();
                     }
