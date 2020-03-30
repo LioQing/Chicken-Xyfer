@@ -203,7 +203,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageBundle.cs" />
+    <Compile Include="Main\MessageBundle.cs" />
+    <Compile Include="Main\Token.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RPG.cs" />
@@ -217,12 +218,15 @@
     <Compile Include="RPG\Entity\Character.cs" />
     <Compile Include="RPG\Entity\Monster.cs" />
     <Compile Include="RPG\Entity\Player.cs" />
+    <Compile Include="RPG\MainGame\Data.cs" />
     <Compile Include="RPG\Modules\GeneralModules.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="token.gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="token.gitignore" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

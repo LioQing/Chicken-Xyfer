@@ -36,7 +36,7 @@ namespace Chicken_Xyfer.RPG.Components
             {
                 return _exp;
             }
-            set
+            private set
             {
                 _exp = value;
 

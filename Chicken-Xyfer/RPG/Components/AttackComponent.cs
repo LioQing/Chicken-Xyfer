@@ -15,7 +15,7 @@ namespace Chicken_Xyfer.RPG.Components
 
         public const int 
             DE_DMG = 10, 
-            DE_DMGRANGE = 5;
+            DE_DMGRANGE = 2;
 
         public int Attack()
         {

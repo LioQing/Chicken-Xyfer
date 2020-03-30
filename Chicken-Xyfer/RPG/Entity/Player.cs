@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Chicken_Xyfer.RPG.Components;
+using Chicken_Xyfer.RPG.MainGame;
 
 namespace Chicken_Xyfer.RPG.Entity
 {
@@ -38,6 +39,67 @@ namespace Chicken_Xyfer.RPG.Entity
                 }
             }
             return default;
+        }
+
+        public int GetValueByMsg(string msg)
+        {
+            if (msg == Data.playerInfoList[0] || msg == Data.playerInfoList[1])
+            {
+                return GetComponent<AttackComponent>().Dmg;
+            }
+            else if (msg == Data.playerInfoList[2] || msg == Data.playerInfoList[3])
+            {
+                return GetComponent<AttackComponent>().DmgRange;
+            }
+            else if (msg == Data.playerInfoList[4] || msg == Data.playerInfoList[5])
+            {
+                return GetComponent<HealthComponent>().Hp;
+            }
+            else if (msg == Data.playerInfoList[6] || msg == Data.playerInfoList[7])
+            {
+                return GetComponent<HealthComponent>().Def;
+            }
+            else if (msg == Data.playerInfoList[8] || msg == Data.playerInfoList[9])
+            {
+                return GetComponent<ExpComponent>().Exp;
+            }
+            else if (msg == Data.playerInfoList[10] || msg == Data.playerInfoList[11])
+            {
+                return GetComponent<ExpComponent>().Lvl;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public int SetValueByMsg(string msg, int value)
+        {
+            if (msg == Data.playerInfoList[0] || msg == Data.playerInfoList[1])
+            {
+                GetComponent<AttackComponent>().Dmg = value;
+                return value;
+            }
+            else if (msg == Data.playerInfoList[2] || msg == Data.playerInfoList[3])
+            {
+                GetComponent<AttackComponent>().DmgRange = value;
+                return value;
+            }
+            else if (msg == Data.playerInfoList[4] || msg == Data.playerInfoList[5])
+            {
+                GetComponent<HealthComponent>().Hp = value;
+                return value;
+            }
+            else if (msg == Data.playerInfoList[6] || msg == Data.playerInfoList[7])
+            {
+                GetComponent<HealthComponent>().Def = value;
+                return value;
+            }
+            else if (msg == Data.playerInfoList[8] || msg == Data.playerInfoList[9])
+            {
+                return GetComponent<ExpComponent>().SetExp(value);
+            }
+            return -1;
         }
     }
 }

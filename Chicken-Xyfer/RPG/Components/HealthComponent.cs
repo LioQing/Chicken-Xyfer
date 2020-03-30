@@ -35,7 +35,7 @@ namespace Chicken_Xyfer.RPG.Components
 
         public const int 
             DE_HP = 50, 
-            DE_DEF = 2;
+            DE_DEF = 0;
 
         public int Attacked(int aDmg)
         {

@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using Chicken_Xyfer.RPG.Components;
 using Chicken_Xyfer.RPG.Entity;
 using Chicken_Xyfer.RPG.Modules;
+using Chicken_Xyfer.RPG.MainGame;
 
 namespace Chicken_Xyfer.RPG
 {
@@ -15,18 +16,8 @@ namespace Chicken_Xyfer.RPG
     {
         EmbedBuilder output = new EmbedBuilder();
 
-        IList<string> playerInfoList = new List<string>()
-        {
-            "damage", "dmg",
-            "damage_range", "dmgrnge",
-            "health", "hp",
-            "defence", "def",
-            "experience", "exp",
-            "level", "lvl"
-        };
-
-        IList<Player> players = new List<Player>();
-        IList<Monster> monsters = new List<Monster>();
+        IList<Player> players;
+        IList<Monster> monsters;
 
         SocketUserMessage msg;
         string[] lowArgs, args;
@@ -35,6 +26,7 @@ namespace Chicken_Xyfer.RPG
         public async void RPGMain(MessageBundle msgbd)
         {
             msgbd.UnBundle(out msg, out lowArgs, out args);
+            GeneralModules.LoadData(out players, out monsters);
 
             output = new EmbedBuilder
             {
@@ -164,22 +156,30 @@ namespace Chicken_Xyfer.RPG
         {
             if (args.Length > 2)
             {
-                if (UserHasPlayer(msg.Author))
+                if (Data.playerInfoList.Contains(lowArgs[2]))
                 {
-                    if (playerInfoList.Contains(lowArgs[2]))
+                    if (UserHasPlayer(msg.Author))
                     {
                         PlayerInfo(msg.Author, 2);
                     }
                 }
                 else if (args.Length > 3)
                 {
-                    IUser user = BaseEntity.GetByNameInList(args[2], players).User;
-                    PlayerInfo(user, 3);
+                    Player player = BaseEntity.GetByNameInList(args[2], players);
+                    if (player != null)
+                    {
+                        IUser user = player.User;
+                        PlayerInfo(user, 3);
+                    }
                 }
-                else if (UserHasPlayer(msg.Author))
+                else
                 {
-                    IUser user = BaseEntity.GetByNameInList(args[2], players).User;
-                    PlayerFullInfo(user);
+                    Player player = BaseEntity.GetByNameInList(args[2], players);
+                    if (player != null)
+                    {
+                        IUser user = player.User;
+                        PlayerFullInfo(user);
+                    }
                 }
             }
             else if(UserHasPlayer(msg.Author))
@@ -198,7 +198,7 @@ namespace Chicken_Xyfer.RPG
                 .AddField("User", Player.GetByUserInList(user, players).User)
                 .AddField("Info Name", "Exp\nLevel\n\nDamage\nDamage Range\nHP\nDefence", true)
                 .AddField("Value",
-                player.GetComponent<ExpComponent>().Exp + "\\" + Player.GetByUserInList(user, players).GetComponent<ExpComponent>().GetNextLvlExp() + "\n" +
+                player.GetComponent<ExpComponent>().Exp + " / " + Player.GetByUserInList(user, players).GetComponent<ExpComponent>().GetNextLvlExp() + "\n" +
                 player.GetComponent<ExpComponent>().Lvl + "\n\n" +
                 player.GetComponent<AttackComponent>().Dmg + "\n" +
                 player.GetComponent<AttackComponent>().DmgRange + "\n" +
@@ -209,89 +209,34 @@ namespace Chicken_Xyfer.RPG
 
         private void PlayerInfo(IUser user, int argPos)
         {
-            if (lowArgs[argPos] == playerInfoList[0] || lowArgs[argPos] == playerInfoList[1]) //Dmg
-            {
-                if (args.Length > argPos + 1)
-                {
-                    if (int.TryParse(lowArgs[argPos + 1], out _))
-                    {
-                        Player.GetByUserInList(user, players).GetComponent<AttackComponent>().Dmg = Int32.Parse(lowArgs[3]);
-                    }
-                }
-                output
-                    .WithTitle($"Player \"{Player.GetByUserInList(user, players).GetComponent<AttributesComponent>().Name}\"")
-                    .WithDescription($"Damage: {Player.GetByUserInList(user, players).GetComponent<AttackComponent>().Dmg}");
-            }
-            else if (lowArgs[argPos] == playerInfoList[2] || lowArgs[argPos] == playerInfoList[3]) //DmgRange
-            {
-                if (args.Length > argPos + 1)
-                {
-                    if (int.TryParse(lowArgs[argPos + 1], out _))
-                    {
-                        Player.GetByUserInList(user, players).GetComponent<AttackComponent>().DmgRange = Int32.Parse(lowArgs[3]);
-                    }
-                }
-                output
-                    .WithTitle($"Player \"{Player.GetByUserInList(user, players).GetComponent<AttributesComponent>().Name}\"")
-                    .WithDescription($"Damage Range: {Player.GetByUserInList(user, players).GetComponent<AttackComponent>().DmgRange}");
-            }
-            else if (lowArgs[argPos] == playerInfoList[4] || lowArgs[argPos] == playerInfoList[5]) //HP
-            {
-                if (args.Length > argPos + 1)
-                {
-                    if (int.TryParse(lowArgs[argPos + 1], out _))
-                    {
-                        Player.GetByUserInList(user, players).GetComponent<HealthComponent>().Hp = Int32.Parse(lowArgs[3]);
-                    }
-                }
-                output
-                    .WithTitle($"Player \"{Player.GetByUserInList(user, players).GetComponent<AttributesComponent>().Name}\"")
-                    .WithDescription($"HP: {Player.GetByUserInList(user, players).GetComponent<HealthComponent>().Hp}");
-            }
-            else if (lowArgs[argPos] == playerInfoList[6] || lowArgs[argPos] == playerInfoList[7]) //Def
-            {
-                if (args.Length > argPos + 1)
-                {
-                    if (int.TryParse(lowArgs[argPos + 1], out _))
-                    {
-                        Player.GetByUserInList(user, players).GetComponent<HealthComponent>().Def = Int32.Parse(lowArgs[3]);
-                    }
-                }
-                output
-                    .WithTitle($"Player \"{Player.GetByUserInList(user, players).GetComponent<AttributesComponent>().Name}\"")
-                    .WithDescription($"Defence: {Player.GetByUserInList(user, players).GetComponent<HealthComponent>().Def}");
-            }
-            else if (lowArgs[argPos] == playerInfoList[8] || lowArgs[argPos] == playerInfoList[9]) //Exp
-            {
-                string LvlUpMsg = "";
+            string lvlUpMsg = "";
+            int value = GeneralModules.GetPlayerInfo(user, players, lowArgs, argPos);
+            string info = lowArgs[argPos];
 
-                if (args.Length > argPos + 1)
-                {
-                    if (int.TryParse(lowArgs[argPos + 1], out _))
-                    {
-                        int LvlUp = Player.GetByUserInList(user, players).GetComponent<ExpComponent>().SetExp(Int32.Parse(lowArgs[3]));
-                        if (LvlUp != 0)
-                        {
-                            LvlUpMsg = $" (Level Up {Player.GetByUserInList(user, players).GetComponent<ExpComponent>().Lvl - LvlUp} => {Player.GetByUserInList(user, players).GetComponent<ExpComponent>().Lvl})";
-                        }
-                    }
-                }
-                output
-                    .WithTitle($"Player \"{Player.GetByUserInList(user, players).GetComponent<AttributesComponent>().Name}\"")
-                    .WithDescription($"Exp: {Player.GetByUserInList(user, players).GetComponent<ExpComponent>().Exp} / {Player.GetByUserInList(user, players).GetComponent<ExpComponent>().GetNextLvlExp()}" + LvlUpMsg);
+            if (GeneralModules.GetOfficialInfoNameByMsg(lowArgs[argPos]) == "Exp")
+            {
+                lvlUpMsg = $" / {Player.GetByUserInList(user, players).GetComponent<ExpComponent>().GetNextLvlExp()}";
             }
-            else if (lowArgs[argPos] == playerInfoList[10] || lowArgs[argPos] == playerInfoList[11]) //LvL
+            else if (GeneralModules.GetOfficialInfoNameByMsg(lowArgs[argPos]) == "Level")
+            {
+                info = "exp";
+                if (value != -1) value = Player.GetByUserInList(user, players).GetComponent<ExpComponent>().GetRequiredExpToLvl(value);
+            }
+
+            if (value != -1)
             {
                 if (args.Length > argPos + 1)
                 {
-                    if (int.TryParse(lowArgs[argPos + 1], out _))
+                    int returnValue = Player.GetByUserInList(user, players).SetValueByMsg(info, value);
+                    if (GeneralModules.GetOfficialInfoNameByMsg(lowArgs[argPos]) == "Exp" && returnValue > 0)
                     {
-                        Player.GetByUserInList(user, players).GetComponent<ExpComponent>().Exp = Player.GetByUserInList(user, players).GetComponent<ExpComponent>().GetRequiredExpToLvl(Int32.Parse(lowArgs[3]));
+                        lvlUpMsg = $" (Level Up {Player.GetByUserInList(user, players).GetComponent<ExpComponent>().Lvl - returnValue} => {Player.GetByUserInList(user, players).GetComponent<ExpComponent>().Lvl})";
                     }
                 }
+
                 output
                     .WithTitle($"Player \"{Player.GetByUserInList(user, players).GetComponent<AttributesComponent>().Name}\"")
-                    .WithDescription($"Level: {Player.GetByUserInList(user, players).GetComponent<ExpComponent>().Lvl}");
+                    .WithDescription($"{GeneralModules.GetOfficialInfoNameByMsg(lowArgs[argPos])}: {Player.GetByUserInList(user, players).GetValueByMsg(lowArgs[argPos])}{lvlUpMsg}");
             }
         }
 
@@ -300,22 +245,27 @@ namespace Chicken_Xyfer.RPG
         //Show all characters on board
         private void Board()
         {
+            string playersStr = GeneralModules.GetCharacterNames(players);
+            string monstersStr = GeneralModules.GetCharacterNames(monsters);
+            if (playersStr == "") playersStr = "*No Player*";
+            if (monstersStr == "") monstersStr = "*No Monster*";
+
             if (args.Length > 2)
             {
                 if (lowArgs[2] == "monster" || lowArgs[2] == "mstr")
                 {
-                    output.WithDescription("Monsters: " + GeneralModules.GetCharacterNames(monsters));
+                    output.WithDescription("Monsters: " + monstersStr);
                 }
                 else if (lowArgs[2] == "player" || lowArgs[2] == "plyr")
                 {
-                    output.WithDescription("Players: " + GeneralModules.GetCharacterNames(players));
+                    output.WithDescription("Players: " + playersStr);
                 }
             }
             else
             {
                 output
-                    .AddField("Players", GeneralModules.GetCharacterNames(players), true)
-                    .AddField("Monsters", GeneralModules.GetCharacterNames(monsters), true)
+                    .AddField("Players", playersStr, true)
+                    .AddField("Monsters", monstersStr, true)
                     .WithDescription("")
                     .WithTitle("");
             }
