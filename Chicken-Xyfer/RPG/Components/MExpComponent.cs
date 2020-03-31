@@ -11,19 +11,7 @@ namespace Chicken_Xyfer.RPG.Components
         Random rand = new Random();
 
         public int Lvl { get; set; }//Level formula: exp = 32 * (lvl + 1) * (rand(0.8, 1.2)) ^ 2
-
-        private int _exp;
-        public int Exp 
-        { 
-            get
-            {
-                return _exp;
-            }
-            private set
-            {
-                _exp = value;
-            }
-        }
+        public int Exp { get; private set; }
 
         public const int
             DE_LVL = 0;

@@ -20,7 +20,18 @@ namespace Chicken_Xyfer.RPG.Modules
             {
                 if (!character.GetComponent<HealthComponent>().IsDead)
                 {
-                    characterStr += character.GetComponent<AttributesComponent>().Name + $"({character.GetComponent<HealthComponent>().Hp} HP)\n";
+                    int lvl;
+
+                    if (typeof(T) == typeof(Monster))
+                    {
+                        lvl = character.GetComponent<MExpComponent>().Lvl;
+                    }
+                    else
+                    {
+                        lvl = character.GetComponent<ExpComponent>().Lvl;
+                    }
+
+                    characterStr += character.GetComponent<AttributesComponent>().Name + $" [Lvl. {lvl}]({character.GetComponent<HealthComponent>().Hp} HP)\n";
                 }
             }
 

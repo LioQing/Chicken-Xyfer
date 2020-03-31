@@ -72,6 +72,11 @@ namespace Chicken_Xyfer.RPG.Components
             return Lvl - temp;
         }
 
+        public int GainExp(int value)
+        {
+            return SetExp(Exp + value);
+        }
+
         public int GetNextLvlExp()
         {
             return GetExpByLvl(Lvl + 1);

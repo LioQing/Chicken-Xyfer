@@ -37,7 +37,7 @@ namespace Chicken_Xyfer.RPG.Components
             DE_HP = 50, 
             DE_DEF = 0;
 
-        public int Attacked(int aDmg)
+        public int Damaged(int aDmg)
         {
             int dmg = aDmg - Def;
             Hp -= dmg;

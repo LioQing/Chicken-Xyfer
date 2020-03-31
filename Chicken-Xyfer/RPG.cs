@@ -281,10 +281,30 @@ namespace Chicken_Xyfer.RPG
                 {
                     Player attacker = Player.GetByUserInList(msg.Author, players);
                     int attackDmg = attacker.GetComponent<AttackComponent>().Attack();
-                    int receivedDmg = target.GetComponent<HealthComponent>().Attacked(attackDmg);
+                    int receivedDmg = target.AttackedByPlayer(attackDmg, attacker);
+
                     output
                         .WithTitle($"Player \"{attacker.GetComponent<AttributesComponent>().Name}\" attacked Monster \"{target.GetComponent<AttributesComponent>().Name}\"")
                         .WithDescription($"\"{target.GetComponent<AttributesComponent>().Name}\" HP: {target.GetComponent<HealthComponent>().Hp + receivedDmg} => {target.GetComponent<HealthComponent>().Hp} ({receivedDmg} Damage)");
+
+                    if (target.GetComponent<HealthComponent>().IsDead)
+                    {
+                        string playerStr = "";
+                        string expStr = "";
+                        IDictionary<Player, int[]> expDict = target.DropExp(players);
+
+                        foreach (KeyValuePair<Player, int[]> item in expDict.OrderByDescending(key => key.Value[0]))
+                        {
+                            playerStr += item.Key.GetComponent<AttributesComponent>().Name + "\n";
+                            expStr += "+" + item.Value[0] + $" => {item.Key.GetComponent<ExpComponent>().Exp} / {item.Key.GetComponent<ExpComponent>().GetNextLvlExp()}";
+                            if (item.Value[1] > 0) expStr += $" (Level Up {item.Key.GetComponent<ExpComponent>().Lvl - item.Value[1]} => {item.Key.GetComponent<ExpComponent>().Lvl})";
+                            expStr += "\n";
+                        }
+
+                        output
+                            .AddField("Player", playerStr, true)
+                            .AddField("Exp", expStr, true);
+                    }
                 }
             }
         }
