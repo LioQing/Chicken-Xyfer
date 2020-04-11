@@ -1,0 +1,44 @@
+﻿{
+  "Types": [
+    {
+      "Name": "Goblin",
+      "Dmg": 10,
+      "DmgRange": 2,
+      "Hp": 40,
+      "Def": 0,
+      "Lvl": 1
+    },
+    {
+      "Name": "Giant_Goblin",
+      "Dmg": 15,
+      "DmgRange": 3,
+      "Hp": 75,
+      "Def": 1,
+      "Lvl": 5
+    },
+    {
+      "Name": "Zombie",
+      "Dmg": 12,
+      "DmgRange": 2,
+      "Hp": 50,
+      "Def": 0,
+      "Lvl": 2
+    },
+    {
+      "Name": "Chest_Monster",
+      "Dmg": 5,
+      "DmgRange": 2,
+      "Hp": 40,
+      "Def": 5,
+      "Lvl": 2
+    },
+    {
+      "Name": "Dragon",
+      "Dmg": 300,
+      "DmgRange": 10,
+      "Hp": 500,
+      "Def": 10,
+      "Lvl": 30
+    }
+  ]
+}

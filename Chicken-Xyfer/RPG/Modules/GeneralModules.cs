@@ -75,18 +75,6 @@ namespace Chicken_Xyfer.RPG.Modules
             }
         }
 
-        public static int GetPlayerInfo(IUser user, IList<Player> players, string[] lowArgs, int argPos)
-        {
-            if (lowArgs.Length > argPos + 1)
-            {
-                if (int.TryParse(lowArgs[argPos + 1], out _))
-                {
-                    return Int32.Parse(lowArgs[argPos + 1]);
-                }
-            }
-            return Player.GetByUserInList(user, players).GetValueByMsg(lowArgs[argPos]);
-        }
-
         public static void LoadData(out IList<Player> players, out IList<Monster> monsters)
         {
             players = Data.players;

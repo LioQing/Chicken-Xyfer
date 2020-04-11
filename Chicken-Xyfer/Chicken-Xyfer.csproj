@@ -208,6 +208,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RPG.cs" />
+    <Compile Include="RPG\Components\AIComponent.cs" />
     <Compile Include="RPG\Components\AttackComponent.cs" />
     <Compile Include="RPG\Components\AttributesComponent.cs" />
     <Compile Include="RPG\Components\BaseComponent.cs" />
@@ -224,6 +225,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="RPG\MainGame\Monsters.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="token.gitignore" />

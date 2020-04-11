@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Chicken_Xyfer.RPG.Components;
+using Chicken_Xyfer.RPG.MainGame;
 
 namespace Chicken_Xyfer.RPG.Entity
 {
     class Monster : Character
     {
         MExpComponent mExpComponent;
+        AIComponent aiComponent;
 
         public IDictionary<Player, int> Attackers = new Dictionary<Player, int>();
 
@@ -47,6 +49,43 @@ namespace Chicken_Xyfer.RPG.Entity
             return returnDict;
         }
 
+        public KeyValuePair<Player, int> Attack(IList<Player> players)
+        {
+            Player player = aiComponent.TargetSelect(players);
+            int dmg = GetComponent<AttackComponent>().Attack();
+            return new KeyValuePair<Player, int>(player, dmg);
+        }
+
+        public static bool IsType(string name)
+        {
+            foreach (MonsterType monster in Data.monsterTypes.Types)
+            {
+                if (monster.Name == name)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static void SpawnByType(string name, IList<Monster> monsters)
+        {
+            foreach (MonsterType monsterType in Data.monsterTypes.Types)
+            {
+                if (monsterType.Name == name)
+                {
+                    monsters.Add(new Monster(
+                        monsterType.Name,
+                        monsterType.Dmg,
+                        monsterType.DmgRange,
+                        monsterType.Hp,
+                        monsterType.Def,
+                        monsterType.Lvl));
+                }
+            }
+        }
+
         public Monster(
             string aName, 
             int aDmg = AttackComponent.DE_DMG, 
@@ -57,6 +96,7 @@ namespace Chicken_Xyfer.RPG.Entity
             : base(aName, aDmg, aDmgRange, aHp, aDef)
         {
             mExpComponent = new MExpComponent(aLvl);
+            aiComponent = new AIComponent();
         }
     }
 }

@@ -64,6 +64,10 @@ namespace Chicken_Xyfer.RPG
                         Attack();
                     }
                 }
+                else if (lowArgs[1] == "hitmeharddaddy")
+                {
+                    MonsterMove();
+                }
             }
 
             if (output.Description != "Sample")
@@ -100,7 +104,14 @@ namespace Chicken_Xyfer.RPG
                 {
                     if (args.Length > 3)
                     {
-                        monsters.Add(new Monster(args[3]));
+                        if (Monster.IsType(args[3]))
+                        {
+                            Monster.SpawnByType(args[3], monsters);
+                        }
+                        else
+                        {
+                            monsters.Add(new Monster(args[3]));
+                        }
                     }
                     else
                     {
@@ -210,7 +221,7 @@ namespace Chicken_Xyfer.RPG
         private void PlayerInfo(IUser user, int argPos)
         {
             string lvlUpMsg = "";
-            int value = GeneralModules.GetPlayerInfo(user, players, lowArgs, argPos);
+            int value = Player.GetInfo(user, players, lowArgs, argPos);
             string info = lowArgs[argPos];
 
             if (GeneralModules.GetOfficialInfoNameByMsg(lowArgs[argPos]) == "Exp")
@@ -327,6 +338,24 @@ namespace Chicken_Xyfer.RPG
                 .WithDescription("A level-exp chart.")
                 .AddField("Level", lvlStr, true)
                 .AddField("Exp", expStr, true);
+        }
+
+        //Monster Moves
+        private void MonsterMove()
+        {
+            if (args.Length > 2)
+            {
+                Monster attacker = Monster.GetByNameInList(args[2], monsters);
+                if (attacker != null)
+                {
+                    KeyValuePair<Player, int> attack = attacker.Attack(players);
+                    int receivedDmg = attack.Key.GetComponent<HealthComponent>().Damaged(attack.Value);
+
+                    output
+                        .WithTitle($"Monster \"{attacker.GetComponent<AttributesComponent>().Name}\" attacked Player \"{attack.Key.GetComponent<AttributesComponent>().Name}\"")
+                        .WithDescription($"\"{attack.Key.GetComponent<AttributesComponent>().Name}\" HP: {attack.Key.GetComponent<HealthComponent>().Hp + receivedDmg} => {attack.Key.GetComponent<HealthComponent>().Hp} ({receivedDmg} Damage)");
+                }
+            }
         }
     }
 }
