@@ -15,7 +15,7 @@ namespace Chicken_Xyfer
     {
         public static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
 
-        string TOKEN;
+        string TOKEN = Environment.GetEnvironmentVariable("token");
 
         private string PREFIX = "cx|";
         public static Color EMBEDCOLOR = new Color(0xC22947);
@@ -26,7 +26,7 @@ namespace Chicken_Xyfer
 
         public async Task MainAsync()
         {
-            TOKEN = Token.GetTokenFromFile();
+            //TOKEN = Token.GetTokenFromFile();
 
             _client = new DiscordSocketClient();
 
